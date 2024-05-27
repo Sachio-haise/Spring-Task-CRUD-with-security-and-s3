@@ -1,0 +1,1 @@
+https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.3.0&packaging=jar&jvmVersion=17&groupId=com.spring&artifactId=main&name=main&description=Spring%20Starter%20Kit&packageName=com.spring.main&dependencies=devtools,data-jpa,lombok,web,mysql,security
