@@ -1,20 +1,25 @@
-package com.spring.security.service;
+package com.spring.security.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.spring.security.entity.User;
 import com.spring.security.repository.TokenRepository;
+import com.spring.security.service.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,9 +30,17 @@ public class JwtServiceImpl implements JwtService{
 
     private final TokenRepository tokenRepository;
 
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+
     @Override
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
+    }
+
+    @Override
+    public Integer extractUserId(String token){
+        return extractClaim(token, claims -> claims.get("userId", Integer.class));
     }
 
     @Override
@@ -62,7 +75,10 @@ public class JwtServiceImpl implements JwtService{
 
     @Override
     public String generateToken(User user) {
-      String token = Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)).signWith(getSignKey()).compact();
+
+      Map<String,Object> claims = new HashMap<>();
+      claims.put("userId", user.getId());
+      String token = Jwts.builder().setClaims(claims).setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)).signWith(getSignKey()).compact();
       return token;
     }
     
@@ -70,5 +86,17 @@ public class JwtServiceImpl implements JwtService{
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64URL.decode(secret_key);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    @Override
+    public String extractTokenFromRequest() {
+         String authHeader = httpServletRequest.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+
+        String token = authHeader.substring(7);
+        return token;
     }
 }

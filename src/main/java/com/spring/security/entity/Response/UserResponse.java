@@ -1,4 +1,8 @@
-package com.spring.security.entity;
+package com.spring.security.entity.Response;
+
+import java.util.Map;
+
+import com.spring.security.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-    private String token;
+public class UserResponse {
+    private User user;
 }

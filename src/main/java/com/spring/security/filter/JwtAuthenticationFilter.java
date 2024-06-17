@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.spring.security.service.JwtService;
-import com.spring.security.service.UserDetailsServiceImpl;
+import com.spring.security.service.impl.UserDetailsServiceImpl;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
