@@ -10,12 +10,9 @@ import com.spring.security.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +32,21 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody User request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    @PostMapping("/forget-password")
+    public ResponseEntity<Boolean> forgotPassword(@ModelAttribute User request) {
+        return ResponseEntity.ok(authenticationService.forgotPassword(request));
+    }
+
+    @PostMapping("/check-code")
+    public ResponseEntity<User> checkCode(@ModelAttribute User request) {
+        return ResponseEntity.ok(authenticationService.checkCode(request));
+    }
+    
+    @PostMapping("/update-password")
+    public ResponseEntity<User> updatePassword(@ModelAttribute User request) {
+        return ResponseEntity.ok(authenticationService.updatePassword(request));
     }
 
     @PostMapping("/user")

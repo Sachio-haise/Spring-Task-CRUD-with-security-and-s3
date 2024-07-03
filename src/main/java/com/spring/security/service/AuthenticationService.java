@@ -18,4 +18,10 @@ public interface AuthenticationService {
     public UserResponse getUser(User request);
 
     public User updateProfile(User request, MultipartFile file) throws IOException;
+
+    public boolean forgotPassword(User request);
+
+    public User checkCode(User user);
+
+    public User updatePassword(User user);
 }

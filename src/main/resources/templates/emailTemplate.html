@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #f2f2f2;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .code {
+            background-color: #f2f2f2;
+            width: fit-content;
+        }
+
+        .content {
+            margin-top: 20px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 th:text="${subject}">Welcome to Our Service</h1>
+        </div>
+        <div class="content">
+            <p>Dear <span th:text="${name}">Customer</span>,</p>
+            <p>Your password reset code is - </p>
+            <div class="code">
+                <h3 style="padding: 10px;" th:text="${message}">Message</h3>
+            </div>
+            
+            <p>Best regards,<br>The Team</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2023 Our Company. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

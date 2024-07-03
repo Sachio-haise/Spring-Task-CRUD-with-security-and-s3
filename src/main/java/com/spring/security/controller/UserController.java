@@ -14,6 +14,8 @@ import com.spring.security.service.AuthenticationService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -25,5 +27,5 @@ public class UserController {
     @PostMapping("/update")
     public ResponseEntity<User> updateUser(@ModelAttribute User request,MultipartFile file) throws IOException {
          return ResponseEntity.ok(authenticationService.updateProfile(request, file));
-    }
+    }   
 }
