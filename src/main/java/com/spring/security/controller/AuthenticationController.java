@@ -3,6 +3,7 @@ package com.spring.security.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.security.entity.User;
+import com.spring.security.entity.DTO.PasswordChangeDTO;
 import com.spring.security.entity.Response.AuthenticationResponse;
 import com.spring.security.entity.Response.UserResponse;
 import com.spring.security.service.AuthenticationService;
@@ -10,6 +11,7 @@ import com.spring.security.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,33 +28,30 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid User request) {
-        return ResponseEntity.ok(authenticationService.register(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody User request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request));
     }
 
     @PostMapping("/forget-password")
-    public ResponseEntity<Boolean> forgotPassword(@ModelAttribute User request) {
-        return ResponseEntity.ok(authenticationService.forgotPassword(request));
+    public ResponseEntity<Boolean> forgotPassword(@RequestBody User request) {
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.forgotPassword(request));
     }
 
     @PostMapping("/check-code")
-    public ResponseEntity<User> checkCode(@ModelAttribute User request) {
-        return ResponseEntity.ok(authenticationService.checkCode(request));
+    public ResponseEntity<User> checkCode(@RequestBody User request) {
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.checkCode(request));
     }
     
     @PostMapping("/update-password")
-    public ResponseEntity<User> updatePassword(@ModelAttribute User request) {
-        return ResponseEntity.ok(authenticationService.updatePassword(request));
+    public ResponseEntity<User> updatePassword(@RequestBody User request) {
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.updatePassword(request));
     }
 
-    @PostMapping("/user")
-    public ResponseEntity<UserResponse> getUser(@RequestBody User request) {
-        return ResponseEntity.ok(authenticationService.getUser(request));
-    }
+   
     
 
 }

@@ -58,26 +58,30 @@ public class TaskServiceImpl implements TaskService {
         }
 
         Task task = new Task();
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> {
+        User user = userRepository.findById(Integer.parseInt(request.getUserId())).orElseThrow(() -> {
             throw new ValidationException(Map.of("email", "Email doesn\'t exist."));
         });
         task.setUser(user);
         task.setName(request.getName());
         task.setDescription(request.getDescription());
-        task.setPriority(request.getPriority());
+        task.setPriority(Integer.parseInt(request.getPriority()));
         task.setStatus(request.getStatus());
         task.setFilePath(filePath);
+        task.setDueDate(request.getDueDate());
+        task.setDueTime(request.getDueTime());
 
         return new TaskResponse(taskRepository.save(task));
     }
 
     @Override
     public TaskResponse updateTask(Integer id, TaskDTO taskDTO, MultipartFile file) {
-        User user = userRepository.findById(taskDTO.getUserId()).orElseThrow(() -> {
+        String token = jwtService.extractTokenFromRequest();
+        Integer userId = jwtService.extractUserId(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> {
             throw new ValidationException(Map.of("email", "Email doesn\'t exist."));
         });
 
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findTaskByUserIdAndId(id,user.getId()).orElseThrow(() -> new RuntimeException("Task not found"));
         if(file != null){
             if(task.getFilePath() != null && !task.getFilePath().isEmpty()) {
                 s3UploadService.deleteImage(task.getFilePath());
@@ -89,8 +93,10 @@ public class TaskServiceImpl implements TaskService {
         task.setUser(user);
         task.setName(taskDTO.getName());
         task.setDescription(taskDTO.getDescription());
-        task.setPriority(taskDTO.getPriority());
+        task.setPriority(Integer.parseInt(taskDTO.getPriority()));
         task.setStatus(taskDTO.getStatus());
+        task.setDueDate(taskDTO.getDueDate());
+        task.setDueTime(taskDTO.getDueTime());
         return new TaskResponse(taskRepository.save(task));
     }
 

@@ -47,7 +47,7 @@ public class SecurityConfig {
     private String region;
 
     @Value("${cloud.aws.s3.endpoint}")
-    private String endpoint;
+    private String endPoint;
 
     public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImp,
             JwtAuthenticationFilter jwtAuthenticationFilter,
@@ -99,7 +99,8 @@ public class SecurityConfig {
     public AmazonS3 s3Client() {
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonS3ClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
+                .withRegion(region)
+              //  .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, region))
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                 .build();
     }

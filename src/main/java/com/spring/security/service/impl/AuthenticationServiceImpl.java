@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +19,7 @@ import org.thymeleaf.context.Context;
 
 import com.spring.security.entity.Token;
 import com.spring.security.entity.User;
+import com.spring.security.entity.DTO.PasswordChangeDTO;
 import com.spring.security.entity.Response.AuthenticationResponse;
 import com.spring.security.entity.Response.UserResponse;
 import com.spring.security.exception.ValidationException;
@@ -28,6 +30,7 @@ import com.spring.security.service.EmailService;
 import com.spring.security.service.JwtService;
 import com.spring.security.service.S3UploadService;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -95,7 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     Map<String,String> errors = new HashMap<>();
 
     if(request.getUsername() == null || request.getUsername().trim().isEmpty()){
-      errors.put("email", "Email field is required.");
+      errors.put("username", "Email field is required.");
     }
 
     if(request.getPassword() == null || request.getPassword().trim().isEmpty()){
@@ -107,7 +110,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> {
-      throw new ValidationException(Map.of("email", "Email doesn\'t exist."));
+      throw new ValidationException(Map.of("username", "Email doesn\'t exist."));
     });
 
     if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) throw new ValidationException(Map.of("password", "Invalid Password."));
@@ -125,9 +128,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   @Override
-  public UserResponse getUser(User request){
-    User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> {
-      throw new ValidationException(Map.of("email","User not found."));
+  public UserResponse getUser(){
+    String token = jwtService.extractTokenFromRequest();
+    
+    String username = jwtService.extractUsername(token);
+    User user = userRepository.findByUsername(username).orElseThrow(() -> {
+      throw new ValidationException(Map.of("username","User not found."));
     });
 
      UserResponse userResponse = new UserResponse(user);
@@ -137,7 +143,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Override
   public boolean forgotPassword(User request) {
     User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> {
-      throw new ValidationException(Map.of("email","User not found."));
+      throw new ValidationException(Map.of("username","User not found."));
     });
     Random random = new Random();
     int otp = 100000 + random.nextInt(900000);
@@ -154,7 +160,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Override
   public User checkCode(User request) {
     User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> {
-      throw new ValidationException(Map.of("email","User not found."));
+      throw new ValidationException(Map.of("username","User not found."));
     });
     if(user.getCode() == null || !user.getCode().equals(request.getCode())) {
       throw new ValidationException(Map.of("code","Invalid code."));
@@ -165,12 +171,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Override
   public User updatePassword(User request) {
     User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> {
-      throw new ValidationException(Map.of("email", "User not found."));
+      throw new ValidationException(Map.of("usename", "User not found."));
     });
     if(user.getCode() == null || !user.getCode().equals(request.getCode())) {
       throw new ValidationException(Map.of("code","Invalid code."));
     }
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    user.setPassword(passwordEncoder.encode(request.getPassword()));
     user.setCode(null);
     return userRepository.save(user);
   }
@@ -206,8 +212,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     user.setFirstName(request.getFirstName());
     user.setLastName(request.getLastName());
-    user.setRole(request.getRole());
+    user.setDescription(request.getDescription());
    
     return userRepository.save(user);
+  }
+
+  @Override
+  public User changePassword(PasswordChangeDTO request){
+    String token = jwtService.extractTokenFromRequest();
+    Integer userId = jwtService.extractUserId(token);
+    User user = userRepository.findById(userId).orElseThrow(() -> {
+      throw new RuntimeException("User not found");
+    });
+
+    if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))  throw new ValidationException(Map.of("password", "Invalid Password."));
+
+    if(request.getPassword().length() < 8) 
+      throw new ValidationException(Map.of("oldPassword", "Password must be at least 8 characters."));
+
+    user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+    return userRepository.save(user);
+
   }
 }

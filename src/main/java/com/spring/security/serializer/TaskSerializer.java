@@ -19,6 +19,8 @@ public class TaskSerializer extends JsonSerializer<Task>{
         jsonGenerator.writeStringField("status", task.getStatus().toString());
        // jsonGenerator.writeObjectField("user", task.getUser());
         jsonGenerator.writeStringField("filePath", task.getFilePath());
+        jsonGenerator.writeStringField("dueTime", task.getDueTime());
+        jsonGenerator.writeStringField("dueDate", task.getDueDate());
         jsonGenerator.writeStringField("created_at", task.getCreated_at().toString());
         jsonGenerator.writeStringField("updated_at", task.getUpdated_at().toString());
         jsonGenerator.writeEndObject();

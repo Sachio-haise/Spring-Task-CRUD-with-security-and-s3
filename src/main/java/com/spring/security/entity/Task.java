@@ -28,6 +28,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.ToString;
 
 @Entity
 @AllArgsConstructor
@@ -60,6 +61,14 @@ public class Task {
     @NonNull
     @Enumerated(EnumType.STRING)
     Status status;
+
+    @NonNull
+    @Column(name = "due_date", nullable = false)
+    private String dueDate;
+
+    @NonNull
+    @Column(name = "due_time", nullable = false)
+    private String dueTime;
 
     @Column(name = "file_path")
     private String filePath;

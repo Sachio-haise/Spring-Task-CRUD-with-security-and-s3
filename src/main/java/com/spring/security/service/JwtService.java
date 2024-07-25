@@ -19,5 +19,7 @@ public interface JwtService {
 
   <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
+  boolean  isTokenExpired(String token);
+
   String extractTokenFromRequest();
 }

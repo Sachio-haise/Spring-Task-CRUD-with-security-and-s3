@@ -18,12 +18,16 @@ public class TaskDTO {
 
     private String description;
 
-    private Integer priority;
+    private String priority;
 
     private Status status;
 
     private String filePath;
 
-    private Integer userId;
+    private String dueDate;
+
+    private String dueTime;
+
+    private String userId;
 
 }
