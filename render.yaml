@@ -1,3 +1,8 @@
+databases:
+  - name: my-postgres-db
+    plan: free
+    region: oregon
+
 services:
   - type: web
     name: my-spring-boot-app
@@ -6,28 +11,17 @@ services:
     buildCommand: ./mvnw clean package
     startCommand: java -jar target/security-0.0.1-SNAPSHOT.jar
     envVars:
-      - key: DB_HOST
+      - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: my-postgres-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: my-postgres-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: my-postgres-db
-          property: name
-      - key: DB_USERNAME
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: my-postgres-db
           property: username
-      - key: DB_PASSWORD
+      - key: SPRING_DATASOURCE_PASSWORD
         fromDatabase:
           name: my-postgres-db
           property: password
-
-databases:
-  - name: my-postgres-db
-    plan: free
-    region: oregon
+      - key: JAVA_HOME
+        value: /opt/render/project/src/.render/.jdk
