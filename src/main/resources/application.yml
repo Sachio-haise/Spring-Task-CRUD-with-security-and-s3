@@ -1,0 +1,87 @@
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: us-east-1
+    s3:
+      endpoint: ${AWS_ENDPOINT}
+
+application:
+  bucket:
+    name: springbucket-1
+
+server:
+  port:  ${PORT:8080}
+
+spring:
+    profiles: 
+      active: prod
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: ${MAIL_HOSTNAME}
+      password: ${MAIL_PASSWORD}
+      properties:
+        mail.smtp.auth: true
+        mail.smtp.starttls.enable: true
+        
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: demo
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    url: jdbc:mysql://localhost:3306/task
+    username: root
+    password: 
+    driver-class-name: com.mysql.jdbc.Driver
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+logging:
+  level:
+    root: INFO
+    com.spring.security: DEBUG 
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  application:
+    name: demo
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+logging:
+  level:
+    root: INFO
+    com.spring.security: DEBUG
