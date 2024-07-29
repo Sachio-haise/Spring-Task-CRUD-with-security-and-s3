@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: my-spring-boot-app
+    env: java
+    plan: free
+    buildCommand: ./mvnw clean package
+    startCommand: java -jar target/security-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: my-postgres-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: my-postgres-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: my-postgres-db
+          property: name
+      - key: DB_USERNAME
+        fromDatabase:
+          name: my-postgres-db
+          property: username
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: my-postgres-db
+          property: password
+
+databases:
+  - name: my-postgres-db
+    plan: free
+    region: oregon
