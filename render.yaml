@@ -23,7 +23,12 @@ services:
           name: my-postgres-db
           property: password
       - key: AWS_ACCESS_KEY
+        value: ${AWS_ACCESS_KEY}
       - key: AWS_SECRET_KEY
+        value: ${AWS_SECRET_KEY}
       - key: AWS_ENDPOINT
+        value: ${AWS_ENDPOINT}
       - key: MAIL_HOSTNAME
+        value: ${MAIL_HOSTNAME}
       - key: MAIL_PASSWORD
+        value: ${MAIL_PASSWORD}
