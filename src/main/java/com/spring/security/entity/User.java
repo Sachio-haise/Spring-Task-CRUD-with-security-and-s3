@@ -24,6 +24,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.Valid;
@@ -41,6 +42,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @JsonSerialize(using = UserSerializer.class)
+@Table(name = "app_user")
 public class User implements UserDetails {
 
     @Valid
