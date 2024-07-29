@@ -1,5 +1,5 @@
 databases:
-  - name: my-postgres-db
+  - name: task-management-app-db
     plan: free
     region: oregon
 
@@ -12,15 +12,15 @@ services:
     envVars:
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
-          name: my-postgres-db
+          name: task-management-app-db
           property: connectionString
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
-          name: my-postgres-db
+          name: task-management-app-db
           property: username
       - key: SPRING_DATASOURCE_PASSWORD
         fromDatabase:
-          name: my-postgres-db
+          name: task-management-app-db
           property: password
       - key: AWS_ACCESS_KEY
         value: ${AWS_ACCESS_KEY}

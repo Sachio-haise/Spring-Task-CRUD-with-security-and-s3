@@ -1,3 +1,72 @@
+# Common Configuration
+server:
+  port: 8080
+
+spring:
+  application:
+    name: demo
+  profiles:
+    active: prod
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_HOSTNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# Development Profile
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/task
+    username: root
+    password: 
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+  logging:
+    level:
+      root: INFO
+      com.spring.security: DEBUG
+
+# Production Profile
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+  logging:
+    level:
+      root: INFO
+      com.spring.security: DEBUG
+
+# AWS Configuration
 cloud:
   aws:
     credentials:
@@ -11,78 +80,3 @@ cloud:
 application:
   bucket:
     name: springbucket-1
-
-server:
-  port:  8080
-
-spring:
-    profiles: 
-      active: prod
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: ${MAIL_HOSTNAME}
-      password: ${MAIL_PASSWORD}
-      properties:
-        mail.smtp.auth: true
-        mail.smtp.starttls.enable: true
-        
----
-
-spring:
-  config:
-    activate:
-      on-profile: dev
-  application:
-    name: demo
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-  datasource:
-    url: jdbc:mysql://localhost:3306/task
-    username: root
-    password: 
-    driver-class-name: com.mysql.jdbc.Driver
-  web:
-    resources:
-      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
-logging:
-  level:
-    root: INFO
-    com.spring.security: DEBUG 
-
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: prod
-  application:
-    name: demo
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-  datasource:
-    url: jdbc:postgresql://dpg-cqj4tjeehbks73c5v7m0-a.oregon-postgres.render.com:5432/springflutterdb
-    username: springflutterdb_user
-    password: uRgPvKG8YMUvhoAgyDTravTVG2w9Qp3U
-    driver-class-name: org.postgresql.Driver
-  web:
-    resources:
-      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
-logging:
-  level:
-    root: INFO
-    com.spring.security: DEBUG
-
