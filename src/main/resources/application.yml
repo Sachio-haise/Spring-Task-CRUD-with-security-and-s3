@@ -13,7 +13,7 @@ application:
     name: springbucket-1
 
 server:
-  port:  ${PORT:8080}
+  port:  8080
 
 spring:
     profiles: 

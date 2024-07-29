@@ -1,0 +1,29 @@
+databases:
+  - name: my-postgres-db
+    plan: free
+    region: oregon
+
+services:
+  - type: web
+    name: my-spring-boot-app
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: my-postgres-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: my-postgres-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: my-postgres-db
+          property: password
+      - key: AWS_ACCESS_KEY
+      - key: AWS_SECRET_KEY
+      - key: AWS_ENDPOINT
+      - key: MAIL_HOSTNAME
+      - key: MAIL_PASSWORD
